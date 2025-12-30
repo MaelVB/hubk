@@ -1,0 +1,11 @@
+{
+  "extends": "@hubk/tsconfig/base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "noEmit": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
