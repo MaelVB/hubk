@@ -1,0 +1,20 @@
+{
+  "name": "@hubk/auth-core",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src --max-warnings=0",
+    "test": "echo \"No tests\""
+  },
+  "devDependencies": {
+    "@hubk/eslint-config": "workspace:*",
+    "@hubk/tsconfig": "workspace:*",
+    "eslint": "^8.57.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@hubk/shared": "workspace:*"
+  }
+}
