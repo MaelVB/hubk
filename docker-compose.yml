@@ -30,6 +30,7 @@ services:
       OIDC_ISSUER: ${OIDC_ISSUER}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE}
       OIDC_JWKS_URL: ${OIDC_JWKS_URL}
+      OIDC_APPS_ENDPOINT: ${OIDC_APPS_ENDPOINT}
     command: >
       bash -lc "corepack enable && pnpm install && pnpm --filter @hubk/api dev"
     depends_on:

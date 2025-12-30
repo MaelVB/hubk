@@ -4,15 +4,14 @@ A Kubernetes-friendly app portal that lists and launches applications accessible
 
 ## Architecture
 
-A light hexagonal/clean architecture is used in the API:
+The API follows standard NestJS modules/controllers/services, while the IdP-specific adapters live in shared packages to keep a light hexagonal boundary:
 
-- **Domain**: core entities (`apps/api/src/domain`)
-- **Application**: use-cases and ports (`apps/api/src/application`)
-- **Adapters**: infrastructure + web (`apps/api/src/adapters`)
-  - `adapters/auth` contains IdP/JWT implementations
-  - `adapters/repositories` contains TypeORM repository adapters
+- **Apps module**: `apps/api/src/apps` (controllers/services + TypeORM entities)
+- **Auth module**: `apps/api/src/auth` (guard + auth service)
+- **IdP adapters**: `packages/idp-authentik` (Authentiik-specific implementation of ports)
+- **Ports**: `packages/auth-core` (IdP ports + adapter types)
 
-Only adapters know about IdP-specific claim names. The rest of the API consumes normalized claims.
+Only adapters know about IdP-specific claim names. The API consumes normalized claims and generic IdP ports.
 
 ## Local development
 
@@ -51,14 +50,14 @@ docker compose up
 
 ## Environment variables
 
-- `apps/api/.env` controls database + OIDC validation
+- `apps/api/.env` controls database + OIDC validation + optional IdP apps endpoint
 - `apps/web/.env` controls NextAuth + OIDC login
 
 ## Adding a new IdP adapter
 
-1. Implement `IdpClaimsPort` from `@hubk/auth-core` with a new adapter in `apps/api/src/adapters/auth`.
-2. Map the IdP-specific claim names to the normalized claims shape (`NormalizedUserClaims`).
-3. Swap the adapter in `AppModule` providers.
+1. Implement the ports from `@hubk/auth-core` in a new package (e.g. `packages/idp-keycloak`).
+2. Export a factory that returns an `IdpAdapter` with `claims`, `jwtVerifier`, and `apps` implementations.
+3. Update `apps/api/src/auth/auth.module.ts` to use the new factory.
 
 ## Scripts
 

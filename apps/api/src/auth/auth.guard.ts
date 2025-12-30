@@ -5,8 +5,8 @@ import {
   UnauthorizedException
 } from "@nestjs/common";
 import type { Request } from "express";
-import type { IdpClaimsPort, JwtVerifierPort } from "@hubk/auth-core";
 import type { NormalizedUserClaims } from "@hubk/shared";
+import { AuthService } from "./auth.service";
 
 export type AuthenticatedRequest = Request & {
   user?: NormalizedUserClaims;
@@ -14,10 +14,7 @@ export type AuthenticatedRequest = Request & {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(
-    private readonly jwtVerifier: JwtVerifierPort,
-    private readonly claimsAdapter: IdpClaimsPort
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
@@ -32,12 +29,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("Missing bearer token");
     }
 
-    try {
-      const claims = await this.jwtVerifier.verify(token);
-      request.user = this.claimsAdapter.normalize(claims);
-      return true;
-    } catch (error) {
-      throw new UnauthorizedException("Invalid token");
-    }
+    request.user = await this.authService.authenticate(token);
+    return true;
   }
 }

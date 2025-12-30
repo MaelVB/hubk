@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn
 } from "typeorm";
@@ -19,6 +20,10 @@ export class AccessRuleEntity {
   @Column()
   claimValue!: string;
 
+  @Column({ name: "appId" })
+  appId!: string;
+
   @ManyToOne(() => AppEntity, (app) => app.accessRules, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "appId" })
   app!: AppEntity;
 }
