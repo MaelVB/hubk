@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: hubk-api:latest
+          image: ghcr.io/maelvb/hubk-api:main
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3001
