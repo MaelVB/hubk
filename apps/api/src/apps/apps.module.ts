@@ -1,4 +1,4 @@
-import { Module, type DynamicModule } from "@nestjs/common";
+import { Module, type DynamicModule, type ModuleMetadata } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppEntity } from "./app.entity";
@@ -10,7 +10,10 @@ import { AuthModule } from "../auth/auth.module";
 @Module({})
 export class AppsModule {
   static register(options: { dbEnabled: boolean }): DynamicModule {
-    const imports = [AuthModule, ConfigModule];
+    const imports: NonNullable<ModuleMetadata["imports"]> = [
+      AuthModule,
+      ConfigModule
+    ];
 
     if (options.dbEnabled) {
       imports.unshift(TypeOrmModule.forFeature([AppEntity, AccessRuleEntity]));

@@ -10,15 +10,15 @@ import { AccessRuleEntity } from "./access-rule.entity";
 @Injectable()
 export class AppsService {
   constructor(
+    @Inject("IDP_APPS")
+    private readonly idpApps: IdpAppsPort,
+    private readonly configService: ConfigService,
     @Optional()
     @InjectRepository(AppEntity)
     private readonly appRepository?: Repository<AppEntity>,
     @Optional()
     @InjectRepository(AccessRuleEntity)
-    private readonly accessRuleRepository?: Repository<AccessRuleEntity>,
-    @Inject("IDP_APPS")
-    private readonly idpApps: IdpAppsPort,
-    private readonly configService: ConfigService
+    private readonly accessRuleRepository?: Repository<AccessRuleEntity>
   ) {}
 
   async listAppsForUser(user: NormalizedUserClaims, accessToken?: string): Promise<AppSummary[]> {
