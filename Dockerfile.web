@@ -1,12 +1,12 @@
 FROM node:20-slim AS builder
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-workspace.yaml ./
 COPY packages ./packages
 COPY apps ./apps
 
 RUN corepack enable
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 RUN pnpm --filter @hubk/shared build \
   && pnpm --filter @hubk/web build
 
