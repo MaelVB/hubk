@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 import type { AppSummary } from "@hubk/shared";
@@ -123,32 +123,40 @@ export default function Home() {
           )}
           {!loading && !error && apps.length > 0 && (
             <div className="app-grid" role="list">
-              {apps.map((app) => (
-                <div className="app-card" key={app.id} role="listitem">
-                  <div className="app-icon">
-                    {app.iconUrl ? (
-                      <img src={app.iconUrl} alt={`${app.name} logo`} />
-                    ) : (
-                      <div 
-                        className="app-icon-placeholder"
-                        aria-label={`${app.name} icon placeholder`}
-                      >
-                        {app.name.substring(0, 2).toUpperCase()}
-                      </div>
-                    )}
+              {apps.map((app) => {
+                const displayName = app.name ?? app.slug;
+                const cardStyle = app.widgetColor
+                  ? ({ "--app-accent": app.widgetColor } as CSSProperties)
+                  : undefined;
+
+                return (
+                  <div className="app-card" key={app.id} role="listitem" style={cardStyle}>
+                    <div className="app-icon">
+                      {app.iconUrl ? (
+                        <img src={app.iconUrl} alt={`${displayName} logo`} />
+                      ) : (
+                        <div
+                          className="app-icon-placeholder"
+                          aria-label={`${displayName} icon placeholder`}
+                        >
+                          {displayName.substring(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <strong>{displayName}</strong>
+                      {app.description && <p>{app.description}</p>}
+                      {app.notes && <p className="app-notes">{app.notes}</p>}
+                    </div>
+                    <button
+                      onClick={() => window.open(app.targetUrl, "_blank")}
+                      aria-label={`Launch ${displayName} application`}
+                    >
+                      Launch
+                    </button>
                   </div>
-                  <div>
-                    <strong>{app.name}</strong>
-                    <p>{app.description}</p>
-                  </div>
-                  <button
-                    onClick={() => window.open(app.targetUrl, "_blank")}
-                    aria-label={`Launch ${app.name} application`}
-                  >
-                    Launch
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </main>

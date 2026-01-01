@@ -1,6 +1,7 @@
 import type {
   IdpAdapter,
   IdpAppsPort,
+  IdpAppAccess,
   IdpClaimsPort,
   RawIdpClaims
 } from "@hubk/auth-core";
@@ -56,7 +57,7 @@ class AuthentikJwtVerifier {
 class AuthentikAppsAdapter implements IdpAppsPort {
   constructor(private readonly apiUrl?: string) {}
 
-  async listAppsForUser(user: NormalizedUserClaims, accessToken?: string): Promise<{ slug: string }[]> {
+  async listAppsForUser(user: NormalizedUserClaims, accessToken?: string): Promise<IdpAppAccess[]> {
     console.log("[AuthentikAppsAdapter] listAppsForUser called");
     console.log("[AuthentikAppsAdapter] API URL:", this.apiUrl);
     console.log("[AuthentikAppsAdapter] Has access token:", !!accessToken);
@@ -94,13 +95,48 @@ class AuthentikAppsAdapter implements IdpAppsPort {
         return [];
       }
 
-      const data = await response.json() as { 
-        results?: Array<{ slug: string; name: string; launch_url?: string }> 
+      const data = await response.json() as {
+        results?: Array<{
+          pk?: string;
+          slug: string;
+          name?: string;
+          launch_url?: string;
+          meta_launch_url?: string;
+          meta_description?: string | null;
+          meta_icon?: string | null;
+        }>;
       };
       
       console.log("[AuthentikAppsAdapter] Apps data received:", JSON.stringify(data, null, 2));
       
-      const apps = (data.results ?? []).map(app => ({ slug: app.slug }));
+      const apiOrigin = new URL(this.apiUrl).origin;
+      const apps = (data.results ?? []).map((app) => {
+        const iconUrl =
+          typeof app.meta_icon === "string" && app.meta_icon.trim().length > 0
+            ? app.meta_icon.startsWith("http")
+              ? app.meta_icon
+              : `${apiOrigin}${app.meta_icon}`
+            : undefined;
+        const description =
+          typeof app.meta_description === "string" && app.meta_description.trim().length > 0
+            ? app.meta_description
+            : undefined;
+        const targetUrl =
+          typeof app.launch_url === "string" && app.launch_url.trim().length > 0
+            ? app.launch_url
+            : typeof app.meta_launch_url === "string" && app.meta_launch_url.trim().length > 0
+            ? app.meta_launch_url
+            : undefined;
+
+        return {
+          id: typeof app.pk === "string" && app.pk.length > 0 ? app.pk : undefined,
+          slug: app.slug,
+          name: typeof app.name === "string" && app.name.length > 0 ? app.name : undefined,
+          description,
+          iconUrl,
+          targetUrl
+        };
+      });
       console.log("[AuthentikAppsAdapter] Returning apps:", apps);
       
       return apps;

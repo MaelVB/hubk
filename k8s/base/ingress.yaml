@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hubk-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: hubk.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hubk-web
+                port:
+                  number: 3000
+    - host: api.hubk.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hubk-api
+                port:
+                  number: 3001

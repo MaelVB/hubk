@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hubk-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hubk-postgres-secret
+                  key: POSTGRES_PASSWORD

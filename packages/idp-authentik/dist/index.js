@@ -38,33 +38,30 @@ class AuthentikJwtVerifier {
 }
 class AuthentikAppsAdapter {
     apiUrl;
-    apiToken;
-    constructor(apiUrl, apiToken) {
+    constructor(apiUrl) {
         this.apiUrl = apiUrl;
-        this.apiToken = apiToken;
     }
     async listAppsForUser(user, accessToken) {
         console.log("[AuthentikAppsAdapter] listAppsForUser called");
         console.log("[AuthentikAppsAdapter] API URL:", this.apiUrl);
-        console.log("[AuthentikAppsAdapter] Has API token:", !!this.apiToken);
+        console.log("[AuthentikAppsAdapter] Has access token:", !!accessToken);
         console.log("[AuthentikAppsAdapter] User subject:", user.subject);
         if (!this.apiUrl) {
             console.warn("[AuthentikAppsAdapter] Authentik API URL not configured, returning empty apps list");
             return [];
         }
-        if (!this.apiToken) {
-            console.warn("[AuthentikAppsAdapter] Authentik API token not configured, returning empty apps list");
+        if (!accessToken) {
+            console.warn("[AuthentikAppsAdapter] No access token provided, returning empty apps list");
             return [];
         }
         try {
             // Récupérer les applications assignées à l'utilisateur via l'API Authentik
-            // On utilise le user.subject pour filtrer les applications accessibles par l'utilisateur
-            // Note: L'API Authentik nécessite un token API avec les bonnes permissions
+            // L'endpoint /me retourne uniquement les apps de l'utilisateur authentifié
             const url = `${this.apiUrl}/core/applications/?only_with_launch_url=true&ordering=name&page=1&page_size=100`;
             console.log("[AuthentikAppsAdapter] Fetching apps from:", url);
             const response = await fetch(url, {
                 headers: {
-                    "Authorization": `Bearer ${this.apiToken}`,
+                    "Authorization": `Bearer ${accessToken}`,
                     "Content-Type": "application/json"
                 }
             });
@@ -77,7 +74,30 @@ class AuthentikAppsAdapter {
             }
             const data = await response.json();
             console.log("[AuthentikAppsAdapter] Apps data received:", JSON.stringify(data, null, 2));
-            const apps = (data.results ?? []).map(app => ({ slug: app.slug }));
+            const apiOrigin = new URL(this.apiUrl).origin;
+            const apps = (data.results ?? []).map((app) => {
+                const iconUrl = typeof app.meta_icon === "string" && app.meta_icon.trim().length > 0
+                    ? app.meta_icon.startsWith("http")
+                        ? app.meta_icon
+                        : `${apiOrigin}${app.meta_icon}`
+                    : undefined;
+                const description = typeof app.meta_description === "string" && app.meta_description.trim().length > 0
+                    ? app.meta_description
+                    : undefined;
+                const targetUrl = typeof app.launch_url === "string" && app.launch_url.trim().length > 0
+                    ? app.launch_url
+                    : typeof app.meta_launch_url === "string" && app.meta_launch_url.trim().length > 0
+                        ? app.meta_launch_url
+                        : undefined;
+                return {
+                    id: typeof app.pk === "string" && app.pk.length > 0 ? app.pk : undefined,
+                    slug: app.slug,
+                    name: typeof app.name === "string" && app.name.length > 0 ? app.name : undefined,
+                    description,
+                    iconUrl,
+                    targetUrl
+                };
+            });
             console.log("[AuthentikAppsAdapter] Returning apps:", apps);
             return apps;
         }
@@ -91,7 +111,7 @@ function createAuthentikAdapter(config) {
     return {
         claims: new AuthentikClaimsAdapter(),
         jwtVerifier: new AuthentikJwtVerifier(config.issuer, config.jwksUrl),
-        apps: new AuthentikAppsAdapter(config.apiUrl, config.apiToken)
+        apps: new AuthentikAppsAdapter(config.apiUrl)
     };
 }
 //# sourceMappingURL=index.js.map

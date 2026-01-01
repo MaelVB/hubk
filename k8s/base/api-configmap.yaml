@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hubk-api-config
+data:
+  APPS_MODE: dynamic
+  WEB_ORIGIN: https://hubk.example.com
+  OIDC_ISSUER: https://authentik.example.com/application/o/hubk/
+  OIDC_JWKS_URL: https://authentik.example.com/application/o/hubk/jwks/
+  AUTHENTIK_API_URL: https://authentik.example.com/api/v3
+  OIDC_AUDIENCE: hubk-api

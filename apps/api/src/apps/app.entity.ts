@@ -16,8 +16,8 @@ export class AppEntity {
   @Column({ unique: true })
   slug!: string;
 
-  @Column()
-  name!: string;
+  @Column({ nullable: true })
+  name?: string;
 
   @Column({ nullable: true })
   description?: string;
@@ -25,8 +25,20 @@ export class AppEntity {
   @Column({ nullable: true })
   iconUrl?: string;
 
-  @Column()
-  targetUrl!: string;
+  @Column({ nullable: true })
+  targetUrl?: string;
+
+  @Column({ nullable: true })
+  notes?: string;
+
+  @Column({ nullable: true })
+  widgetColor?: string;
+
+  @Column({ type: "int", nullable: true })
+  sortOrder?: number;
+
+  @Column({ default: true })
+  isVisible!: boolean;
 
   @OneToMany(() => AccessRuleEntity, (rule) => rule.app, { cascade: true })
   accessRules!: AccessRuleEntity[];

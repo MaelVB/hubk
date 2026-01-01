@@ -11,6 +11,9 @@ export type AppSummary = {
     name: string;
     description?: string;
     iconUrl?: string;
+    notes?: string;
+    widgetColor?: string;
+    sortOrder?: number;
     targetUrl: string;
 };
 export type MeResponse = {

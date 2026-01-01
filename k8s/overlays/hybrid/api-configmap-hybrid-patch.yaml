@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hubk-api-config
+data:
+  APPS_MODE: hybrid
+  POSTGRES_HOST: hubk-postgres
+  POSTGRES_PORT: "5432"
+  POSTGRES_USER: hubk
+  POSTGRES_DB: hubk
+  TYPEORM_SYNCHRONIZE: "false"

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hubk-web-config
+data:
+  NEXTAUTH_URL: https://hubk.example.com
+  OIDC_ISSUER: https://authentik.example.com/application/o/hubk/
+  OIDC_CLIENT_ID: hubk-web
+  OIDC_SCOPES: openid profile email groups goauthentik.io/api
+  NEXT_PUBLIC_API_BASE_URL: https://api.hubk.example.com

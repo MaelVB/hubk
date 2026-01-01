@@ -5,9 +5,18 @@ export interface IdpClaimsPort {
 }
 export type IdpAppAccess = {
     slug: string;
+    id?: string;
+    name?: string;
+    description?: string;
+    iconUrl?: string;
+    targetUrl?: string;
+    notes?: string;
+    widgetColor?: string;
+    sortOrder?: number;
+    isVisible?: boolean;
 };
 export interface IdpAppsPort {
-    listAppsForUser(user: NormalizedUserClaims): Promise<IdpAppAccess[]>;
+    listAppsForUser(user: NormalizedUserClaims, accessToken?: string): Promise<IdpAppAccess[]>;
 }
 export interface JwtVerifierPort {
     verify(token: string): Promise<RawIdpClaims>;

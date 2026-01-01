@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hubk-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hubk-web
+  template:
+    metadata:
+      labels:
+        app: hubk-web
+    spec:
+      containers:
+        - name: web
+          image: hubk-web:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: hubk-web-config
+            - secretRef:
+                name: hubk-secrets
+          env:
+            - name: NODE_ENV
+              value: production
