@@ -7,8 +7,8 @@ COPY apps ./apps
 
 RUN corepack enable
 RUN pnpm install --no-frozen-lockfile
-RUN pnpm --filter @hubk/auth-core build \
-  && pnpm --filter @hubk/shared build \
+RUN pnpm --filter @hubk/shared build \
+  && pnpm --filter @hubk/auth-core build \
   && pnpm --filter @hubk/idp-authentik build \
   && pnpm --filter @hubk/api build
 
