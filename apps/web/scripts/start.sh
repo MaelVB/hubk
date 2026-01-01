@@ -14,4 +14,5 @@ fs.writeFileSync(
 );
 NODE
 
-exec node /app/node_modules/next/dist/bin/next start -p 3000
+cd /app/apps/web
+exec node node_modules/next/dist/bin/next start -p 3000
