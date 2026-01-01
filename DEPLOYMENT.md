@@ -36,7 +36,6 @@
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `OIDC_ISSUER` | Authentik issuer URL | `https://auth.example.com/application/o/hubk/` |
-| `OIDC_AUDIENCE` | API audience identifier | `hubk-api` |
 | `OIDC_CLIENT_ID` | OAuth2 client ID | `hubk-web` |
 | `OIDC_CLIENT_SECRET` | OAuth2 client secret | `your-secret-here` |
 | `NEXTAUTH_SECRET` | NextAuth.js secret (min 32 chars) | Generate with `openssl rand -base64 32` |
