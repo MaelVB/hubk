@@ -3,6 +3,21 @@ import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 import type { AppSummary } from "@hubk/shared";
 
+type RuntimeEnv = {
+  NEXT_PUBLIC_API_BASE_URL?: string;
+};
+
+const getApiBaseUrl = () => {
+  if (typeof window !== "undefined") {
+    const runtimeEnv = (window as typeof window & { __ENV?: RuntimeEnv }).__ENV;
+    if (runtimeEnv?.NEXT_PUBLIC_API_BASE_URL) {
+      return runtimeEnv.NEXT_PUBLIC_API_BASE_URL;
+    }
+  }
+
+  return process.env.NEXT_PUBLIC_API_BASE_URL;
+};
+
 export default function Home() {
   const { data: session, status } = useSession();
   const [apps, setApps] = useState<AppSummary[]>([]);
@@ -18,9 +33,16 @@ export default function Home() {
       setLoading(true);
       setError(null);
       try {
+        const apiBaseUrl = getApiBaseUrl();
+        if (!apiBaseUrl) {
+          setError("Missing API base URL configuration");
+          setLoading(false);
+          return;
+        }
+
         console.log("Fetching apps with token:", session.accessToken?.substring(0, 20) + "...");
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/apps`,
+          `${apiBaseUrl}/apps`,
           {
             headers: {
               Authorization: `Bearer ${session.accessToken}`

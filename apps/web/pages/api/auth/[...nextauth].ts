@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.OIDC_CLIENT_SECRET ?? "",
       authorization: {
         params: {
-          scope: process.env.OIDC_SCOPES ?? "openid profile email hubk:api"
+          scope: process.env.OIDC_SCOPES ?? "openid profile email"
         }
       },
       idToken: true,
