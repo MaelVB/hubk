@@ -11,7 +11,7 @@ export type IdpAppAccess = {
 };
 
 export interface IdpAppsPort {
-  listAppsForUser(user: NormalizedUserClaims): Promise<IdpAppAccess[]>;
+  listAppsForUser(user: NormalizedUserClaims, accessToken?: string): Promise<IdpAppAccess[]>;
 }
 
 export interface JwtVerifierPort {

@@ -10,6 +10,7 @@ import { AuthService } from "./auth.service";
 
 export type AuthenticatedRequest = Request & {
   user?: NormalizedUserClaims;
+  accessToken?: string;
 };
 
 @Injectable()
@@ -30,6 +31,7 @@ export class AuthGuard implements CanActivate {
     }
 
     request.user = await this.authService.authenticate(token);
+    request.accessToken = token;
     return true;
   }
 }

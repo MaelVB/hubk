@@ -1,66 +1,152 @@
-# hubk
+# Hubk - Application Hub Portal
 
-A Kubernetes-friendly app portal that lists and launches applications accessible to the logged-in user. The monorepo uses Turborepo + pnpm workspaces with a NestJS API and Next.js web UI.
+> 🚀 A modern, Kubernetes-friendly application portal that integrates with Authentik to provide a centralized hub for accessing all your applications.
 
-## Architecture
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)](https://www.typescriptlang.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-10-red)](https://nestjs.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
 
-The API follows standard NestJS modules/controllers/services, while the IdP-specific adapters live in shared packages to keep a light hexagonal boundary:
+## ✨ Features
+
+- 🔐 **OAuth2/OIDC Authentication** via Authentik
+- 🎯 **Role-Based Access Control** - Show apps based on user groups/roles
+- 🎨 **Clean Modern UI** - Beautiful card-based interface
+- 🔄 **Real-time Sync** - Automatically syncs with Authentik applications
+- 🏗️ **Monorepo Architecture** - Turborepo + pnpm workspaces
+- 🐳 **Docker Ready** - Easy deployment with Docker Compose
+- ♿ **Accessible** - WCAG compliant with ARIA labels
+- 🌐 **SEO Optimized** - Proper meta tags and semantic HTML
+
+## 🏛️ Architecture
+
+The application follows a clean architecture with hexagonal design principles:
 
 - **Apps module**: `apps/api/src/apps` (controllers/services + TypeORM entities)
 - **Auth module**: `apps/api/src/auth` (guard + auth service)
-- **IdP adapters**: `packages/idp-authentik` (Authentiik-specific implementation of ports)
+- **IdP adapters**: `packages/idp-authentik` (Authentik-specific implementation of ports)
 - **Ports**: `packages/auth-core` (IdP ports + adapter types)
+- **Shared types**: `packages/shared` (Common types across frontend/backend)
 
-Only adapters know about IdP-specific claim names. The API consumes normalized claims and generic IdP ports.
+### Technology Stack
 
-## Local development
+**Backend (API)**
+- NestJS - Progressive Node.js framework
+- TypeORM - ORM for PostgreSQL
+- Jose - JWT verification
+- class-validator - DTO validation
 
-### Requirements
+**Frontend (Web)**
+- Next.js - React framework
+- NextAuth.js - Authentication for Next.js
+- TypeScript - Type safety
+
+**Database**
+- PostgreSQL 15
+
+## 📦 Project Structure
+
+```
+hubk/
+├── apps/
+│   ├── api/          # NestJS backend API
+│   └── web/          # Next.js frontend
+├── packages/
+│   ├── auth-core/    # Authentication ports (interfaces)
+│   ├── idp-authentik/# Authentik adapter implementation
+│   ├── shared/       # Shared types
+│   ├── eslint-config/# Shared ESLint config
+│   └── tsconfig/     # Shared TypeScript config
+└── docker-compose.yml
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
 
 - Node.js 20+
 - pnpm 9+
-- Docker (for PostgreSQL)
+- Docker & Docker Compose
 
-### Setup
+### Installation
 
-```bash
-pnpm install
-cp .env.example .env
-cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
-```
+1. **Clone and install dependencies**
+   ```bash
+   pnpm install
+   ```
 
-### Start Postgres via Docker
+2. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your Authentik configuration
+   ```
 
-```bash
-docker compose up postgres
-```
+3. **Start with Docker Compose (Recommended)**
+   ```bash
+   docker-compose up -d
+   ```
+   
+   Or run services individually:
+   ```bash
+   # Start PostgreSQL only
+   docker-compose up postgres -d
+   
+   # Run in development mode
+   pnpm dev
+   ```
 
-### Run the stack
+4. **Access the application**
+   - 🌐 Frontend: http://localhost:3000
+   - 🔌 API: http://localhost:3001
 
-```bash
-pnpm dev
-```
+## 📖 Documentation
 
-Alternatively, you can run everything via Docker:
+- [**Deployment Guide**](./DEPLOYMENT.md) - Complete production deployment instructions
+- [**Security Best Practices**](./SECURITY.md) - Security guidelines and recommendations
 
-```bash
-docker compose up
-```
+## 🔧 Configuration
 
-## Environment variables
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed configuration options.
 
-- `apps/api/.env` controls database + OIDC validation + optional IdP apps endpoint
-- `apps/web/.env` controls NextAuth + OIDC login
+**Key Environment Variables:**
+- `OIDC_ISSUER` - Your Authentik issuer URL
+- `OIDC_CLIENT_ID` / `OIDC_CLIENT_SECRET` - OAuth2 credentials
+- `NEXTAUTH_SECRET` - NextAuth.js secret (generate with `openssl rand -base64 32`)
+- Root `.env` controls shared configuration
+- Environment variables are passed via docker-compose.yml
 
-## Adding a new IdP adapter
+## 🔌 Adding a New IdP Adapter
 
-1. Implement the ports from `@hubk/auth-core` in a new package (e.g. `packages/idp-keycloak`).
-2. Export a factory that returns an `IdpAdapter` with `claims`, `jwtVerifier`, and `apps` implementations.
-3. Update `apps/api/src/auth/auth.module.ts` to use the new factory.
+The architecture supports multiple identity providers through adapters:
 
-## Scripts
+1. Create a new package (e.g. `packages/idp-keycloak`)
+2. Implement the ports from `@hubk/auth-core`:
+   - `IdpClaimsPort` - Claims normalization
+   - `JwtVerifierPort` - JWT verification
+   - `IdpAppsPort` - Apps listing
+3. Export a factory that returns an `IdpAdapter`
+4. Update `apps/api/src/auth/auth.module.ts` to use the new factory
 
-- `pnpm dev` – run web + api in parallel
-- `pnpm build` – build packages
-- `pnpm lint` – run linting
+## 🛠️ Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Run web + api in parallel (development mode) |
+| `pnpm build` | Build all packages |
+| `pnpm lint` | Run ESLint across all packages |
+| `pnpm test` | Run tests (when implemented) |
+
+## 🐛 Troubleshooting
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md#troubleshooting) for common issues and solutions.
+
+## 📝 License
+
+[Add your license here]
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+Made with ❤️ for Kubernetes clusters

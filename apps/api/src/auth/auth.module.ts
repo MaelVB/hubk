@@ -14,9 +14,8 @@ import { AuthService } from "./auth.service";
       useFactory: (config: ConfigService): IdpAdapter =>
         createAuthentikAdapter({
           issuer: config.getOrThrow("OIDC_ISSUER"),
-          audience: config.getOrThrow("OIDC_AUDIENCE"),
           jwksUrl: config.get("OIDC_JWKS_URL"),
-          appsEndpoint: config.get("OIDC_APPS_ENDPOINT")
+          apiUrl: config.get("AUTHENTIK_API_URL")
         })
     },
     {

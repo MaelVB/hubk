@@ -18,8 +18,9 @@ export class AppsController {
   @UseGuards(AuthGuard)
   @Get("/apps")
   async list(@Req() request: Request): Promise<AppsResponse> {
-    const user = (request as AuthenticatedRequest).user as NormalizedUserClaims;
-    const apps = await this.appsService.listAppsForUser(user);
+    const authReq = request as AuthenticatedRequest;
+    const user = authReq.user as NormalizedUserClaims;
+    const apps = await this.appsService.listAppsForUser(user, authReq.accessToken);
     return { apps };
   }
 }

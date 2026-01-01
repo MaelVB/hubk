@@ -17,9 +17,9 @@ export class AppsService {
     private readonly idpApps: IdpAppsPort
   ) {}
 
-  async listAppsForUser(user: NormalizedUserClaims): Promise<AppSummary[]> {
-    const idpApps = await this.idpApps.listAppsForUser(user);
-    const idpSlugs = idpApps.map((app) => app.slug);
+  async listAppsForUser(user: NormalizedUserClaims, accessToken?: string): Promise<AppSummary[]> {
+    const idpApps = await this.idpApps.listAppsForUser(user, accessToken);
+    const idpSlugs = idpApps.map((app: { slug: string }) => app.slug);
 
     const accessRuleAppIds = await this.findAppIdsByClaims(
       user.groups,
@@ -60,18 +60,31 @@ export class AppsService {
       return [];
     }
 
-    const rules = await this.accessRuleRepository
+    const queryBuilder = this.accessRuleRepository
       .createQueryBuilder("rule")
-      .select(["rule.appId"])
-      .where(
-        "(rule.claimType = :groupType AND rule.claimValue IN (:...groups))",
-        { groupType: "GROUP", groups: groups.length ? groups : [""] }
-      )
-      .orWhere(
-        "(rule.claimType = :roleType AND rule.claimValue IN (:...roles))",
-        { roleType: "ROLE", roles: roles.length ? roles : [""] }
-      )
-      .getMany();
+      .select(["rule.appId"]);
+
+    const conditions: string[] = [];
+    const parameters: Record<string, unknown> = {};
+
+    if (groups.length > 0) {
+      conditions.push("(rule.claimType = :groupType AND rule.claimValue IN (:...groups))");
+      parameters.groupType = "GROUP";
+      parameters.groups = groups;
+    }
+
+    if (roles.length > 0) {
+      conditions.push("(rule.claimType = :roleType AND rule.claimValue IN (:...roles))");
+      parameters.roleType = "ROLE";
+      parameters.roles = roles;
+    }
+
+    if (conditions.length === 0) {
+      return [];
+    }
+
+    queryBuilder.where(conditions.join(" OR "), parameters);
+    const rules = await queryBuilder.getMany();
 
     return rules.map((rule) => rule.appId);
   }

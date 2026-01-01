@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 import type { AppSummary } from "@hubk/shared";
 
@@ -6,6 +7,7 @@ export default function Home() {
   const { data: session, status } = useSession();
   const [apps, setApps] = useState<AppSummary[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!session?.accessToken) {
@@ -14,7 +16,9 @@ export default function Home() {
 
     const loadApps = async () => {
       setLoading(true);
+      setError(null);
       try {
+        console.log("Fetching apps with token:", session.accessToken?.substring(0, 20) + "...");
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/apps`,
           {
@@ -23,10 +27,21 @@ export default function Home() {
             }
           }
         );
+        console.log("API Response status:", response.status);
         if (response.ok) {
           const data = await response.json();
+          console.log("Apps loaded:", data);
           setApps(data.apps ?? []);
+        } else {
+          const errorText = await response.text();
+          setError(
+            `Failed to load applications: ${response.status} ${response.statusText}`
+          );
+          console.error("API Error:", errorText);
         }
+      } catch (err) {
+        setError("Network error: Unable to reach the API server");
+        console.error("Fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -36,54 +51,108 @@ export default function Home() {
   }, [session?.accessToken]);
 
   if (status === "loading") {
-    return <main>Loading session...</main>;
+    return (
+      <>
+        <Head>
+          <title>Hubk Portal - Loading</title>
+          <meta name="description" content="Application hub for your Kubernetes cluster" />
+        </Head>
+        <main>Loading session...</main>
+      </>
+    );
   }
 
   if (!session) {
     return (
-      <main>
-        <h1>Hubk Portal</h1>
-        <p>Please sign in to view your applications.</p>
-        <button onClick={() => signIn("oidc")}>Sign in</button>
-      </main>
+      <>
+        <Head>
+          <title>Hubk Portal - Sign In</title>
+          <meta name="description" content="Sign in to access your applications" />
+        </Head>
+        <main>
+          <h1>Hubk Portal</h1>
+          <p>Please sign in to view your applications.</p>
+          <button 
+            onClick={() => signIn("oidc")}
+            aria-label="Sign in with your identity provider"
+          >
+            Sign in
+          </button>
+        </main>
+      </>
     );
   }
 
   return (
-    <div>
-      <header className="topbar">
-        <strong>Hubk</strong>
-        <div>
-          <span>{session.user?.name ?? session.user?.email}</span>
-          <button style={{ marginLeft: 12 }} onClick={() => signOut()}>
-            Logout
-          </button>
-        </div>
-      </header>
-      <main>
-        <h1>Your Apps</h1>
-        {loading ? <p>Loading apps...</p> : null}
-        {!loading && apps.length === 0 ? (
-          <p>No applications assigned yet.</p>
-        ) : (
-          <div className="app-grid">
-            {apps.map((app) => (
-              <div className="app-card" key={app.id}>
-                {app.iconUrl ? <img src={app.iconUrl} alt={app.name} /> : null}
-                <div>
-                  <strong>{app.name}</strong>
-                  <p>{app.description}</p>
-                </div>
-                <button
-                  onClick={() => window.open(app.targetUrl, "_blank")}
-                >
-                  Launch
-                </button>
-              </div>
-            ))}
+    <>
+      <Head>
+        <title>Hubk Portal - Your Applications</title>
+        <meta name="description" content="Access all your applications from one place" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <div>
+        <header className="topbar">
+          <strong>Hubk</strong>
+          <div>
+            <span aria-label="Current user">{session.user?.name ?? session.user?.email}</span>
+            <button 
+              style={{ marginLeft: 12 }} 
+              onClick={() => signOut()}
+              aria-label="Sign out of your account"
+            >
+              Logout
+            </button>
           </div>
-        )}
-      </main>
-    </div>
+        </header>
+        <main>
+          <h1>Your Apps</h1>
+          {error && (
+            <div className="error-message" role="alert">
+              <p>⚠️ {error}</p>
+              <button 
+                onClick={() => window.location.reload()}
+                aria-label="Retry loading applications"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+          {loading && <p>Loading apps...</p>}
+          {!loading && !error && apps.length === 0 && (
+            <p>No applications assigned yet.</p>
+          )}
+          {!loading && !error && apps.length > 0 && (
+            <div className="app-grid" role="list">
+              {apps.map((app) => (
+                <div className="app-card" key={app.id} role="listitem">
+                  <div className="app-icon">
+                    {app.iconUrl ? (
+                      <img src={app.iconUrl} alt={`${app.name} logo`} />
+                    ) : (
+                      <div 
+                        className="app-icon-placeholder"
+                        aria-label={`${app.name} icon placeholder`}
+                      >
+                        {app.name.substring(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <strong>{app.name}</strong>
+                    <p>{app.description}</p>
+                  </div>
+                  <button
+                    onClick={() => window.open(app.targetUrl, "_blank")}
+                    aria-label={`Launch ${app.name} application`}
+                  >
+                    Launch
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    </>
   );
 }

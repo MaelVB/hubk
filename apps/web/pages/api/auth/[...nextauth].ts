@@ -1,11 +1,11 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
-import OIDCProvider from "next-auth/providers/oauth";
 
 const issuer = process.env.OIDC_ISSUER ?? "";
 
 export const authOptions: NextAuthOptions = {
+  debug: process.env.NODE_ENV === "development",
   providers: [
-    OIDCProvider({
+    {
       id: "oidc",
       name: "OIDC",
       type: "oauth",
@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.OIDC_CLIENT_SECRET ?? "",
       authorization: {
         params: {
-          scope: process.env.OIDC_SCOPES ?? "openid profile email"
+          scope: process.env.OIDC_SCOPES ?? "openid profile email hubk:api"
         }
       },
       idToken: true,
@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
           email: typeof profile.email === "string" ? profile.email : null
         };
       }
-    })
+    }
   ],
   callbacks: {
     async jwt({ token, account }) {
