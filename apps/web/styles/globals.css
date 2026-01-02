@@ -9,8 +9,6 @@ body {
   background-color: var(--mantine-color-gray-0);
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: var(--mantine-color-gray-9);
-  }
+html[data-mantine-color-scheme="dark"] body {
+  background-color: var(--mantine-color-gray-9);
 }
