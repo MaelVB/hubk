@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { signIn } from "next-auth/react";
-import { Button, Center, Paper, Stack, Text, Title } from "@mantine/core";
+import { Center } from "@mantine/core";
+import { AuthCard } from "../components/AuthCard";
 
 export default function Login() {
   return (
@@ -11,17 +12,12 @@ export default function Login() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Center mih="100vh" p="md">
-        <Paper radius="md" shadow="md" withBorder p="xl">
-          <Stack gap="md" align="center">
-            <Title order={3}>Login</Title>
-            <Text size="sm" c="dimmed" ta="center">
-              Use your identity provider to sign in.
-            </Text>
-            <Button onClick={() => signIn("oidc")} aria-label="Sign in with your identity provider">
-              Sign in
-            </Button>
-          </Stack>
-        </Paper>
+        <AuthCard
+          title="Login"
+          description="Use your identity provider to sign in."
+          buttonLabel="Sign in"
+          onSignIn={() => signIn("oidc")}
+        />
       </Center>
     </>
   );

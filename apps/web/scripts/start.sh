@@ -5,8 +5,7 @@ node <<'NODE'
 const fs = require("fs");
 
 const env = {
-  NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || "",
-  NEXT_PUBLIC_APPS_MODE: process.env.NEXT_PUBLIC_APPS_MODE || process.env.APPS_MODE || ""
+  NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || ""
 };
 
 fs.writeFileSync(

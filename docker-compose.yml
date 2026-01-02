@@ -52,7 +52,6 @@ services:
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       OIDC_SCOPES: ${OIDC_SCOPES}
       NEXT_PUBLIC_API_BASE_URL: http://localhost:3001
-      NEXT_PUBLIC_APPS_MODE: ${APPS_MODE}
     command: >
       bash -lc "corepack enable && pnpm install && pnpm --filter @hubk/web dev"
     depends_on:

@@ -1,5 +1,10 @@
 import { Controller, Get, Req, UseGuards } from "@nestjs/common";
-import type { AppsResponse, MeResponse, NormalizedUserClaims } from "@hubk/shared";
+import type {
+  AppsConfigResponse,
+  AppsResponse,
+  MeResponse,
+  NormalizedUserClaims
+} from "@hubk/shared";
 import type { Request } from "express";
 import { AppsService } from "./apps.service";
 import { AuthGuard, AuthenticatedRequest } from "../auth/auth.guard";
@@ -22,5 +27,11 @@ export class AppsController {
     const user = authReq.user as NormalizedUserClaims;
     const apps = await this.appsService.listAppsForUser(user, authReq.accessToken);
     return { apps };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("/apps/config")
+  config(): AppsConfigResponse {
+    return { appsMode: this.appsService.getAppsMode() };
   }
 }

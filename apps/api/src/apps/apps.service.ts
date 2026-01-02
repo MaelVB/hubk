@@ -2,7 +2,7 @@ import { Inject, Injectable, Optional } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
-import type { AppSummary, NormalizedUserClaims } from "@hubk/shared";
+import type { AppSummary, AppsMode, NormalizedUserClaims } from "@hubk/shared";
 import type { IdpAppAccess, IdpAppsPort } from "@hubk/auth-core";
 import { AppEntity } from "./app.entity";
 import { AccessRuleEntity } from "./access-rule.entity";
@@ -197,7 +197,11 @@ export class AppsService {
   }
 
   private isDbEnabled(): boolean {
+    return this.getAppsMode() !== "dynamic" && !!this.appRepository && !!this.accessRuleRepository;
+  }
+
+  getAppsMode(): AppsMode {
     const mode = String(this.configService.get("APPS_MODE") ?? "hybrid").toLowerCase();
-    return mode !== "dynamic" && !!this.appRepository && !!this.accessRuleRepository;
+    return mode === "dynamic" ? "dynamic" : "hybrid";
   }
 }

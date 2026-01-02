@@ -16,6 +16,10 @@ export type AppSummary = {
     sortOrder?: number;
     targetUrl: string;
 };
+export type AppsMode = "dynamic" | "hybrid";
+export type AppsConfigResponse = {
+    appsMode: AppsMode;
+};
 export type MeResponse = {
     user: NormalizedUserClaims;
 };
