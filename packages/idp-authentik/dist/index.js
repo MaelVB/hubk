@@ -42,10 +42,6 @@ class AuthentikAppsAdapter {
         this.apiUrl = apiUrl;
     }
     async listAppsForUser(user, accessToken) {
-        console.log("[AuthentikAppsAdapter] listAppsForUser called");
-        console.log("[AuthentikAppsAdapter] API URL:", this.apiUrl);
-        console.log("[AuthentikAppsAdapter] Has access token:", !!accessToken);
-        console.log("[AuthentikAppsAdapter] User subject:", user.subject);
         if (!this.apiUrl) {
             console.warn("[AuthentikAppsAdapter] Authentik API URL not configured, returning empty apps list");
             return [];
@@ -58,14 +54,12 @@ class AuthentikAppsAdapter {
             // Récupérer les applications assignées à l'utilisateur via l'API Authentik
             // L'endpoint /me retourne uniquement les apps de l'utilisateur authentifié
             const url = `${this.apiUrl}/core/applications/?only_with_launch_url=true&ordering=name&page=1&page_size=100`;
-            console.log("[AuthentikAppsAdapter] Fetching apps from:", url);
             const response = await fetch(url, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
                     "Content-Type": "application/json"
                 }
             });
-            console.log("[AuthentikAppsAdapter] Response status:", response.status);
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error(`[AuthentikAppsAdapter] Failed to fetch apps from Authentik: ${response.status} ${response.statusText}`);
@@ -73,7 +67,6 @@ class AuthentikAppsAdapter {
                 return [];
             }
             const data = await response.json();
-            console.log("[AuthentikAppsAdapter] Apps data received:", JSON.stringify(data, null, 2));
             const apiOrigin = new URL(this.apiUrl).origin;
             const apps = (data.results ?? []).map((app) => {
                 const iconUrl = typeof app.meta_icon === "string" && app.meta_icon.trim().length > 0
@@ -98,7 +91,6 @@ class AuthentikAppsAdapter {
                     targetUrl
                 };
             });
-            console.log("[AuthentikAppsAdapter] Returning apps:", apps);
             return apps;
         }
         catch (error) {

@@ -58,11 +58,6 @@ class AuthentikAppsAdapter implements IdpAppsPort {
   constructor(private readonly apiUrl?: string) {}
 
   async listAppsForUser(user: NormalizedUserClaims, accessToken?: string): Promise<IdpAppAccess[]> {
-    console.log("[AuthentikAppsAdapter] listAppsForUser called");
-    console.log("[AuthentikAppsAdapter] API URL:", this.apiUrl);
-    console.log("[AuthentikAppsAdapter] Has access token:", !!accessToken);
-    console.log("[AuthentikAppsAdapter] User subject:", user.subject);
-    
     if (!this.apiUrl) {
       console.warn("[AuthentikAppsAdapter] Authentik API URL not configured, returning empty apps list");
       return [];
@@ -77,7 +72,6 @@ class AuthentikAppsAdapter implements IdpAppsPort {
       // Récupérer les applications assignées à l'utilisateur via l'API Authentik
       // L'endpoint /me retourne uniquement les apps de l'utilisateur authentifié
       const url = `${this.apiUrl}/core/applications/?only_with_launch_url=true&ordering=name&page=1&page_size=100`;
-      console.log("[AuthentikAppsAdapter] Fetching apps from:", url);
       
       const response = await fetch(url, {
         headers: {
@@ -85,8 +79,6 @@ class AuthentikAppsAdapter implements IdpAppsPort {
           "Content-Type": "application/json"
         }
       });
-
-      console.log("[AuthentikAppsAdapter] Response status:", response.status);
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -106,8 +98,6 @@ class AuthentikAppsAdapter implements IdpAppsPort {
           meta_icon?: string | null;
         }>;
       };
-      
-      console.log("[AuthentikAppsAdapter] Apps data received:", JSON.stringify(data, null, 2));
       
       const apiOrigin = new URL(this.apiUrl).origin;
       const apps = (data.results ?? []).map((app) => {
@@ -137,7 +127,6 @@ class AuthentikAppsAdapter implements IdpAppsPort {
           targetUrl
         };
       });
-      console.log("[AuthentikAppsAdapter] Returning apps:", apps);
       
       return apps;
     } catch (error) {
