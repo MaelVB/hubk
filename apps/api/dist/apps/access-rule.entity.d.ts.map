@@ -1,1 +1,0 @@
-{"version":3,"file":"access-rule.entity.d.ts","sourceRoot":"","sources":["../../src/apps/access-rule.entity.ts"],"names":[],"mappings":"AAOA,OAAO,EAAE,SAAS,EAAE,MAAM,cAAc,CAAC;AAEzC,MAAM,MAAM,mBAAmB,GAAG,OAAO,GAAG,MAAM,CAAC;AAEnD,qBACa,gBAAgB;IAE3B,EAAE,EAAG,MAAM,CAAC;IAGZ,SAAS,EAAG,mBAAmB,CAAC;IAGhC,UAAU,EAAG,MAAM,CAAC;IAGpB,KAAK,EAAG,MAAM,CAAC;IAIf,GAAG,EAAG,SAAS,CAAC;CACjB"}
