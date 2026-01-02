@@ -15,6 +15,7 @@ pnpm-lock.yaml
 # Build outputs
 .next
 .dist
+dist
 dist/*
 build
 out
