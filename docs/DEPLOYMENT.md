@@ -51,6 +51,8 @@
 
 ## Authentik Configuration
 
+Hubk utilise Authentik comme fournisseur d'identité par défaut via OpenID Connect. D'autres IdP pourraient être implémentés à l'avenir. La configuration se fait en deux étapes : créer un provider OAuth2/OIDC puis créer une application qui l'utilise.
+
 ### 1. Create an OAuth2/OIDC Provider
 
 1. Go to **Applications** → **Providers**
@@ -59,7 +61,9 @@
    - **Name**: `hubk-provider`
    - **Client Type**: Confidential
    - **Redirect URIs**: `http://localhost:3000/api/auth/callback/oidc`
-   - **Scopes**: `openid`, `profile`, `email`, `groups`
+   - **Scopes**: `openid`, `profile`, `email`, `groups`, **`goauthentik.io/api`**
+   
+   ⚠️ **Important**: Le scope `goauthentik.io/api` (Authentik API access) est obligatoire pour permettre à Hubk d'accéder à l'API Authentik et récupérer dynamiquement les applications configurées en mode `dynamic` ou `hybrid`.
 
 ### 2. Create an Application
 
@@ -69,6 +73,8 @@
    - **Name**: `Hubk Portal`
    - **Slug**: `hubk`
    - **Provider**: Select the provider created above
+   
+Cette application servira de point d'entrée pour l'authentification SSO de Hubk.
 
 ### 3. Note Your Configuration
 
