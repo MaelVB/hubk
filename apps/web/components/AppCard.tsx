@@ -55,7 +55,7 @@ export const AppCard = ({ app, showSettings, onOpen, onOpenSettings }: AppCardPr
               }}
               aria-label={`Open settings for ${displayName}`}
             >
-              <IconSettings size={16} />
+              <IconSettings size={20} />
             </ActionIcon>
           ) : (
             <Box w={28} h={28} />
@@ -72,7 +72,7 @@ export const AppCard = ({ app, showSettings, onOpen, onOpenSettings }: AppCardPr
             }}
             aria-label={`Open ${displayName} in a new tab`}
           >
-            <IconExternalLink size={16} />
+            <IconExternalLink size={20} />
           </ActionIcon>
         </Box>
         <Box

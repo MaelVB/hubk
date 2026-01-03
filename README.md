@@ -1,6 +1,6 @@
 # Hubk - Application Hub Portal
 
-> 🚀 A modern, Kubernetes-friendly application portal that integrates with Authentik to provide a centralized hub for accessing all your applications.
+> 🚀 A modern, Kubernetes-friendly application portal that integrates with your IdP (Authentik) to provide a centralized hub for accessing all your applications.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)](https://www.typescriptlang.org/)
 [![NestJS](https://img.shields.io/badge/NestJS-10-red)](https://nestjs.com/)
@@ -8,14 +8,13 @@
 
 ## ✨ Features
 
-- 🔐 **OAuth2/OIDC Authentication** via Authentik
+- 🔐 **OAuth2/OIDC Authentication**
 - 🎯 **Role-Based Access Control** - Show apps based on user groups/roles
 - 🎨 **Clean Modern UI** - Beautiful card-based interface
 - 🔄 **Real-time Sync** - Automatically syncs with Authentik applications
 - 🏗️ **Monorepo Architecture** - Turborepo + pnpm workspaces
 - 🐳 **Docker Ready** - Easy deployment with Docker Compose
-- ♿ **Accessible** - WCAG compliant with ARIA labels
-- 🌐 **SEO Optimized** - Proper meta tags and semantic HTML
+- 🐳 **Kubernetes Ready** - Easy deployment with Kustomize
 
 ## 🏛️ Architecture
 
@@ -33,7 +32,6 @@ The application follows a clean architecture with hexagonal design principles:
 - NestJS - Progressive Node.js framework
 - TypeORM - ORM for PostgreSQL
 - Jose - JWT verification
-- class-validator - DTO validation
 
 **Frontend (Web)**
 - Next.js - React framework
@@ -41,7 +39,7 @@ The application follows a clean architecture with hexagonal design principles:
 - TypeScript - Type safety
 
 **Database**
-- PostgreSQL 15
+- PostgreSQL 15 (optional)
 
 ## 📦 Project Structure
 
@@ -65,7 +63,7 @@ hubk/
 
 - Node.js 20+
 - pnpm 9+
-- Docker & Docker Compose
+- Docker & Docker Compose or Kubernetes
 
 ### Installation
 
@@ -100,12 +98,12 @@ hubk/
 
 ## 📖 Documentation
 
-- [**Deployment Guide**](./DEPLOYMENT.md) - Complete production deployment instructions
-- [**Security Best Practices**](./SECURITY.md) - Security guidelines and recommendations
+- [**Deployment Guide**](./docs/DEPLOYMENT.md) - Complete production deployment instructions
+- [**Security Best Practices**](./docs/SECURITY.md) - Security guidelines and recommendations
 
 ## 🔧 Configuration
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed configuration options.
+See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for detailed configuration options.
 
 **Key Environment Variables:**
 - `OIDC_ISSUER` - Your Authentik issuer URL
@@ -141,7 +139,7 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md#troubleshooting) for common issues and solut
 
 ## 📝 License
 
-[Add your license here]
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ## 🤝 Contributing
 

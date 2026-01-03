@@ -10,8 +10,8 @@ type AuthCardProps = {
 export const AuthCard = ({ title, description, buttonLabel, onSignIn }: AuthCardProps) => (
   <Paper radius="md" shadow="md" withBorder p="xl">
     <Stack gap="md" align="center">
-      <Title order={3}>{title}</Title>
-      <Text size="sm" c="dimmed" ta="center">
+      <Title order={1}>{title}</Title>
+      <Text ta="center">
         {description}
       </Text>
       <Button onClick={onSignIn} aria-label={buttonLabel}>

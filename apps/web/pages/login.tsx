@@ -11,7 +11,7 @@ export default function Login() {
         <meta name="description" content="Sign in to your application hub" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <Center mih="100vh" p="md">
+      <Center mih="80vh" p="md">
         <AuthCard
           title="Login"
           description="Use your identity provider to sign in."

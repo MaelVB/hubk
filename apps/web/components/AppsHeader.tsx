@@ -72,7 +72,7 @@ export const AppsHeader = ({
             </Text>
             <Tooltip label="Logout">
               <ActionIcon variant="light" onClick={onSignOut} aria-label="Logout">
-                <IconLogout size={16} />
+                <IconLogout size={20} />
               </ActionIcon>
             </Tooltip>
             <Tooltip label={isDark ? "Switch to light mode" : "Switch to dark mode"}>
@@ -81,7 +81,7 @@ export const AppsHeader = ({
                 onClick={() => setColorScheme(isDark ? "light" : "dark")}
                 aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
               >
-                {isDark ? <IconSun /> : <IconMoon />}
+                {isDark ? <IconSun size={22} /> : <IconMoon size={22} />}
               </ActionIcon>
             </Tooltip>
           </Group>

@@ -82,7 +82,7 @@ export default function Home() {
         </Head>
         <Center mih="80vh" p="md">
           <AuthCard
-            title="Hubk Portal"
+            title="Hubk"
             description="Please sign in to view your applications."
             buttonLabel="Sign in"
             onSignIn={() => signIn("oidc")}
@@ -123,7 +123,7 @@ export default function Home() {
           appsCount={filteredApps.length}
         />
         <AppShell.Main>
-          <Container size="lg">
+          <Container size="lg" mt="xs">
             <Stack gap="lg">
               {error && (
                 <Alert
@@ -163,7 +163,7 @@ export default function Home() {
               )}
               {!loading && !error && filteredApps.length > 0 && (
                 <Flex
-                  gap="xl"
+                  gap="lg"
                   justify="center"
                   align="flex-start"
                   direction="row"
