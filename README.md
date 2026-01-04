@@ -1,8 +1,7 @@
 # Hubk - Application Hub Portal
 
-> 🚀 A modern, Kubernetes-friendly application portal that integrates with your IdP (Authentik) to provide a centralized hub for accessing all your applications.
+> 🚀 A modern, Kubernetes-friendly application hub portal that integrates with your IdP (Authentik) to provide a centralized hub for accessing all your applications. Acts as the entry point for your applications, with your identity provider as the source of truth.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)](https://www.typescriptlang.org/)
 [![NestJS](https://img.shields.io/badge/NestJS-10-red)](https://nestjs.com/)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
 
@@ -14,7 +13,7 @@
 - 🔄 **Real-time Sync** - Automatically syncs with Authentik applications
 - 🏗️ **Monorepo Architecture** - Turborepo + pnpm workspaces
 - 🐳 **Docker Ready** - Easy deployment with Docker Compose
-- 🐳 **Kubernetes Ready** - Easy deployment with Kustomize
+- ☸ **Kubernetes Ready** - Easy deployment with Kustomize
 
 ## 🏛️ Architecture
 
